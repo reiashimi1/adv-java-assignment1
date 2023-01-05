@@ -19,32 +19,16 @@ public class Reader {
     public static void readFiles() throws IOException {
         // TODO: make path relative & do fixes related to code readability
         File directoryPath = new File("C:/Users/user/Desktop/Advanced Java/Code/Assignment1/Language");
-        File mysteryFile = new File(directoryPath + "/mystery.txt");
+        LanguageContent mysteryFile = new LanguageContent("mystery", directoryPath);
         List<File> allFiles = Arrays.asList(directoryPath.listFiles());
-
-        String mysteryFileContent = getFileContent(mysteryFile);
-
-        Map<String, ArrayList<File>> filesForLanguage = new TreeMap<>();
+        ArrayList<LanguageContent> allLanguages = new ArrayList<>();
 
         allFiles.stream().forEach(file -> {
             if (file.isDirectory()) {
                 String language = file.getName().substring(file.getName().length() - 2).toUpperCase();
-                ArrayList<File> directoryFiles = getFilesForEachDir(file);
-                filesForLanguage.put(language, directoryFiles);
+                LanguageContent languageContent = new LanguageContent(language, file);
+                allLanguages.add(languageContent);
             }
-        });
-
-        filesForLanguage.forEach((folderName, files) -> {
-            System.out.println(folderName);
-            System.out.println("------------------");
-            files.stream()
-                    .forEach(file -> {
-                        try {
-                            System.out.println(getFileContent(file));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
         });
     }
 
@@ -57,7 +41,7 @@ public class Reader {
     }
 
     public static String removePunctuation(String content) {
-        String cleanContent = content.replaceAll("[^A-Za-z0-9_]", " ");
+        String cleanContent = content.replaceAll("[!\\\"#\\＄%&\\'\\(\\)\\*\\+,-\\./:;<=>\\?@\\[\\\\\\]\\^_`{\\|}~]", " ");
 
         return cleanContent;
     }
