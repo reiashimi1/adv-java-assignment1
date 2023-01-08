@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class NGramSequence {
-    public static Map<String, Long> getFrequencyDistribution(ArrayList<String> words, int nGram) {
+    public static Map<String, Long> getFrequencyDistribution(ArrayList<String> words, int nGramIndex) {
         List<String> symbols = new ArrayList<>();
         words.stream()
                 .forEach((word) -> {
-                    IntStream.range(0, word.length() - nGram + 1)
-                            .forEach((counter) -> symbols.add(word.substring(counter, counter + nGram)));
+                    IntStream.range(0, word.length() - nGramIndex + 1)
+                            .forEach((counter) -> symbols.add(word.substring(counter, counter + nGramIndex)));
                 });
 
         Map<String, Long> ourMap = symbols.stream()

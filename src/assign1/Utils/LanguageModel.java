@@ -7,18 +7,24 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class LanguageModel {
+public class LanguageModel extends Thread {
     private String language;
     private static File path;
+    private int nGramIndex;
     public ArrayList<String> words = new ArrayList<>();
     Map<String, Long> languageMap;
     double rootOfSquares;
 
-    public LanguageModel(String language, File directory, int nGram) {
+    public LanguageModel(String language, File directory, int nGramIndex) {
         setLanguage(language);
         setPath(directory);
+        setnGramIndex(nGramIndex);
+    }
+
+    @Override
+    public void run() {
         processDirectory();
-        Map<String, Long> langMap = NGramSequence.getFrequencyDistribution(words, nGram);
+        Map<String, Long> langMap = NGramSequence.getFrequencyDistribution(words, nGramIndex);
         setLanguageMap(langMap);
         calculateRootOfSquares();
     }
@@ -40,7 +46,7 @@ public class LanguageModel {
         ArrayList<File> dirFiles = new ArrayList<>();
         Arrays.asList(path.listFiles()).stream()
                 .forEach((nestedFile) -> {
-                    if (nestedFile.getName().endsWith(".txt")) {
+                    if (nestedFile.isFile() && nestedFile.getName().endsWith(".txt")) {
                         dirFiles.add(nestedFile);
                     }
                 });
@@ -90,6 +96,14 @@ public class LanguageModel {
 
     public static void setPath(File path) {
         LanguageModel.path = path;
+    }
+
+    public int getnGramIndex() {
+        return nGramIndex;
+    }
+
+    public void setnGramIndex(int nGramIndex) {
+        this.nGramIndex = nGramIndex;
     }
 
     public ArrayList<String> getWords() {
