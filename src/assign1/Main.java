@@ -20,6 +20,3 @@ public class Main {
         }
     }
 }
-
-//Threads
-//Report

@@ -9,30 +9,26 @@ import java.util.concurrent.TimeUnit;
 public class DataReader {
 
     public static ArrayList<LanguageModel> readLanguageDirectories(String path, int nGramIndex) {
-        ExecutorService executorService = Executors.newCachedThreadPool();
         File directory = new File(path);
         List<File> languageDirectories = Arrays.asList(directory.listFiles());
         ArrayList<LanguageModel> allLanguages = new ArrayList<>();
 
         languageDirectories.stream().forEach(file -> {
-            //TODO tn ktu duhet rregullu besoj
-                executorService.execute(() -> {
-                    if(file.isDirectory()) {
-                        String language = file.getName().substring(file.getName().length() - 2).toUpperCase();
-                        LanguageModel languageModel = new LanguageModel(language, file, nGramIndex);
-                        allLanguages.add(languageModel);
-                    }
-                });
-
-                executorService.shutdown();
-
-                try{
-                    executorService.awaitTermination(1, TimeUnit.MINUTES);
-                }
-                catch(InterruptedException e){
-                    System.out.println("Thread was interrupted!");
-                }
-
+            ExecutorService executorService = Executors.newCachedThreadPool();
+                    executorService.execute(() -> {
+                        if(file.isDirectory()) {
+                            String language = file.getName().substring(file.getName().length() - 2).toUpperCase();
+                            LanguageModel languageModel = new LanguageModel(language, file, nGramIndex);
+                            allLanguages.add(languageModel);
+                        }
+                    });
+            executorService.shutdown();
+            try{
+                executorService.awaitTermination(1, TimeUnit.MINUTES);
+            }
+            catch(InterruptedException e){
+                System.out.println("Error! Thread was interrupted!");
+            }
         });
 
         return allLanguages;

@@ -19,10 +19,6 @@ public class LanguageModel extends Thread {
         setLanguage(language);
         setPath(directory);
         setnGramIndex(nGramIndex);
-    }
-
-    @Override
-    public void run() {
         processDirectory();
         Map<String, Long> langMap = NGramSequence.getFrequencyDistribution(words, nGramIndex);
         setLanguageMap(langMap);
