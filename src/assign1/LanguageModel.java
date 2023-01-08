@@ -1,10 +1,16 @@
-package assign1.Utils;
+package assign1;
+
+import assign1.Utils.NGramSequence;
+import assign1.Utils.Punctuation;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class LanguageModel extends Thread {
@@ -42,17 +48,35 @@ public class LanguageModel extends Thread {
         ArrayList<File> dirFiles = new ArrayList<>();
         Arrays.asList(path.listFiles()).stream()
                 .forEach((nestedFile) -> {
-                    if (nestedFile.isFile() && nestedFile.getName().endsWith(".txt")) {
-                        dirFiles.add(nestedFile);
+                    ExecutorService executorService = Executors.newCachedThreadPool();
+                    executorService.execute(() -> {
+                        if (nestedFile.isFile() && nestedFile.getName().endsWith(".txt")) {
+                            dirFiles.add(nestedFile);
+                        }
+                    });
+                    executorService.shutdown();
+                    try {
+                        executorService.awaitTermination(1, TimeUnit.MINUTES);
+                    } catch (InterruptedException e) {
+                        System.out.println("Error! Thread was interrupted!");
                     }
                 });
 
         dirFiles.stream()
                 .forEach(file -> {
+                    ExecutorService executorService = Executors.newCachedThreadPool();
+                    executorService.execute(() -> {
+                        try {
+                            getFileContent(file);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    executorService.shutdown();
                     try {
-                        getFileContent(file);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        executorService.awaitTermination(1, TimeUnit.MINUTES);
+                    } catch (InterruptedException e) {
+                        System.out.println("Error! Thread was interrupted!");
                     }
                 });
 

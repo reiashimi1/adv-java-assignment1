@@ -1,5 +1,7 @@
 package assign1.Utils;
 
+import assign1.LanguageModel;
+
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -15,18 +17,17 @@ public class DataReader {
 
         languageDirectories.stream().forEach(file -> {
             ExecutorService executorService = Executors.newCachedThreadPool();
-                    executorService.execute(() -> {
-                        if(file.isDirectory()) {
-                            String language = file.getName().substring(file.getName().length() - 2).toUpperCase();
-                            LanguageModel languageModel = new LanguageModel(language, file, nGramIndex);
-                            allLanguages.add(languageModel);
-                        }
-                    });
+            executorService.execute(() -> {
+                if (file.isDirectory()) {
+                    String language = file.getName().substring(file.getName().length() - 2).toUpperCase();
+                    LanguageModel languageModel = new LanguageModel(language, file, nGramIndex);
+                    allLanguages.add(languageModel);
+                }
+            });
             executorService.shutdown();
-            try{
+            try {
                 executorService.awaitTermination(1, TimeUnit.MINUTES);
-            }
-            catch(InterruptedException e){
+            } catch (InterruptedException e) {
                 System.out.println("Error! Thread was interrupted!");
             }
         });
