@@ -4,7 +4,6 @@ import assign1.Utils.DataReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -32,7 +31,6 @@ public class NaturalLanguageProcessor {
             double S = sum.get() / (mysteryFile.getRootOfSquares() * languageModel.getRootOfSquares());
             documentDistances.put(languageModel.getLanguage(), Math.toDegrees(Math.acos(S)));
         }));
-        System.out.println();
 
         documentDistances.values().stream().sorted();
 
