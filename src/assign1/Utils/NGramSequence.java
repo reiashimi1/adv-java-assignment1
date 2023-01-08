@@ -1,4 +1,4 @@
-package Utils;
+package assign1.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,16 +7,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class NGrams {
-
-    private int nGram = 2;
-    public ArrayList<String> words;
-
-    public NGrams(ArrayList<String> words){
-        this.words = words;
-    }
-
-    public void getGrams() {
+public class NGramSequence {
+    public static Map<String, Long> getFrequencyDistribution(ArrayList<String> words, int nGram) {
         List<String> symbols = new ArrayList<>();
         words.stream()
                 .forEach((word) -> {
@@ -26,7 +18,7 @@ public class NGrams {
 
         Map<String, Long> ourMap = symbols.stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        System.out.println(ourMap);
+        return ourMap;
     }
 
 }
